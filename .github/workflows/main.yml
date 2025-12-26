@@ -1,0 +1,34 @@
+name: Windows RDP + Ngrok (TESTING)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-latest
+    timeout-minutes: 360
+
+    steps:
+    - name: Enable RDP
+      run: |
+        net user runneradmin Admin@123
+        reg add "HKLM\System\CurrentControlSet\Control\Terminal Server" /v fDenyTSConnections /t REG_DWORD /d 0 /f
+        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
+
+    - name: Download Ngrok
+      run: |
+        curl -L -o ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip
+        tar -xf ngrok.zip
+
+    - name: Setup Ngrok Auth
+      run: |
+        .\ngrok.exe config add-authtoken 37Np9NvB08tBbLoVsYYWdhU95E9_81vx6A2yUGuGGhXr7biAu
+
+    - name: Start Ngrok TCP
+      run: |
+        Start-Process -NoNewWindow -FilePath .\ngrok.exe -ArgumentList "tcp 3389"
+
+    - name: Show Ngrok Address
+      run: |
+        Start-Sleep -Seconds 10
+        curl http://127.0.0.1:4040/api/tunnels
