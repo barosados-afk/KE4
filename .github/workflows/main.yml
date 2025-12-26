@@ -20,17 +20,18 @@ jobs:
         curl -L -o ngrok.zip https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-windows-amd64.zip
         tar -xf ngrok.zip
 
-    - name: Setup Ngrok
+    - name: Configure Ngrok
       env:
         NGROK_TOKEN: ${{ secrets.NGROK_TOKEN }}
       run: |
+        if (-not $Env:NGROK_TOKEN) { exit 1 }
         .\ngrok.exe config add-authtoken $Env:NGROK_TOKEN
 
-    - name: Start Ngrok
+    - name: Start Ngrok TCP
       run: |
         Start-Process -NoNewWindow -FilePath .\ngrok.exe -ArgumentList "tcp 3389"
-
-    - name: Show Tunnel
-      run: |
         Start-Sleep 10
+
+    - name: Show Ngrok Tunnel
+      run: |
         curl http://127.0.0.1:4040/api/tunnels
