@@ -22,7 +22,7 @@ jobs:
 
     - name: Setup Ngrok Auth
       run: |
-        .\ngrok.exe config add-authtoken 37Np9NvB08tBbLoVsYYWdhU95E9_81vx6A2yUGuGGhXr7biAu
+        .\ngrok.exe config add-authtoken NGROK_AUTHTOKEN=37Np9NvB08tBbLoVsYYWdhU95E9_81vx6A2yUGuGGhXr7biAu
 
     - name: Start Ngrok TCP
       run: |
